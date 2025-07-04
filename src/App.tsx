@@ -6,6 +6,7 @@
 // import Header from "./components/Header";
 // import AlbumList from "./components/AlbumList";
 import Home from "./pages/Home";
+import './index.css'; 
 
 // const albums = [
 //     {
