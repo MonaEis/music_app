@@ -7,8 +7,8 @@ const AlbumSearch = () => {
     const [error, setError] = useState<string | null>(null);
     const [singleSearch, setSingleSearch] = useState<string>("");
 
-    const [currentSearchTerm, setCurrentSearchTerm] = useState<string>("fleetwood mac");
-    const [debouncedInputSearchTerm, setDebouncedInputSearchTerm] = useState<string>("");
+    const [currentSearchTerm, setCurrentSearchTerm] = useState<string>("");
+    const [debouncedInputSearchTerm, setDebouncedInputSearchTerm] = useState<string>("fleetwood mac");
 
     // Initial-Fetch ohne debounce
     useEffect(() => {
@@ -31,14 +31,9 @@ const AlbumSearch = () => {
 
     // debounce-Effekt
     useEffect(() => {
-        if (singleSearch === "") {
-            return;
-        }
-
         const timer = setTimeout(() => {
             setDebouncedInputSearchTerm(singleSearch);
         }, 800);
-
         return () => {
             clearTimeout(timer);
         };
@@ -46,7 +41,8 @@ const AlbumSearch = () => {
 
     // Suche ausführen bei debounced Input
     useEffect(() => {
-        if (!debouncedInputSearchTerm || debouncedInputSearchTerm === currentSearchTerm) return;
+        // Hier keine Prüfung auf currentSearchTerm mehr nötig, da der Debounce-Effekt das steuert
+        if (!debouncedInputSearchTerm) return; // Nicht suchen, wenn leer
 
         setIsLoading(true);
         setError(null);
@@ -67,8 +63,11 @@ const AlbumSearch = () => {
                 console.error("Fetch error:", err);
                 setIsLoading(false);
                 setError(err.message || "Something went wrong during fetch.");
+            }).finally(() => {
+                setIsLoading(false);
             });
-    }, [debouncedInputSearchTerm, currentSearchTerm]);
+    }, [debouncedInputSearchTerm]); // Nur debouncedInputSearchTerm als Abhängigkeit;
+
 
     return (
         <div className="p-4">
@@ -81,10 +80,10 @@ const AlbumSearch = () => {
             />
 
             {isLoading && <div className="text-center text-lg text-gray-600">
-          Lade Alben...
-          {/* Spinner mit Tailwind CSS */}
-          <div className="size-8 animate-spin border-blue-500 border-4 border-t-transparent rounded-full mx-auto mt-2"></div>
-        </div>}
+                Lade Alben...
+                {/* Spinner mit Tailwind CSS */}
+                <div className="size-8 animate-spin border-blue-500 border-4 border-t-transparent rounded-full mx-auto mt-2"></div>
+            </div>}
             {error && (
                 <div>
                     <h1>Error</h1>
@@ -109,7 +108,7 @@ const AlbumSearch = () => {
                                 src={album.album.cover_medium}
                                 alt={album.album.title}
                             />
-                            
+
                             <audio controls src={album.preview} className="w-full"></audio>
                         </div>
                     ))}

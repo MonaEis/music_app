@@ -1,12 +1,8 @@
-export interface Album {
-    id: string;
-    title: string;
-    artist: string;
-    cover: string;
-}
+import type { Datum } from "../types/deezer-types";
+
 
 interface AlbumListProps {
-    albums: Album[];
+    albums: Datum[];
 }
 
 const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
@@ -16,8 +12,8 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
                 return (
                     <div key={album.id}>
                         <h2>{album.title}</h2>
-                        <p>{album.artist}</p>
-                        <img src={album.cover} alt={album.title} />
+                        <p>{album.artist.name}</p>
+                        <img src={album.album.cover_medium} alt={album.title} />
                     </div>
                 );
             })}
