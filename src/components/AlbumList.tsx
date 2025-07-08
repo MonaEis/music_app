@@ -13,7 +13,7 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
                     <div key={album.id}>
                         <h2>{album.title}</h2>
                         <p>{album.artist.name}</p>
-                        <img src={album.album.cover_medium} alt={album.title} />
+                        <img src={album.album?.cover_medium} alt={album.title} />
                     </div>
                 );
             })}
