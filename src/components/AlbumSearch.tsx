@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Datum, Search } from "../types/deezer-types";
+import AlbumCard from "./AlbumCard";
 
 const AlbumSearch = () => {
     const [albums, setAlbums] = useState<Search | null>(null);
@@ -58,6 +59,7 @@ const AlbumSearch = () => {
                 setAlbums(data);
                 setIsLoading(false);
                 setCurrentSearchTerm(debouncedInputSearchTerm);
+                console.log(data)
             })
             .catch((err) => {
                 console.error("Fetch error:", err);
@@ -101,16 +103,17 @@ const AlbumSearch = () => {
             {!isLoading && !error && albums?.data && albums.data.length > 0 && (
                 <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {albums.data.map((album: Datum) => (
-                        <div key={album.id} className="border p-2 rounded shadow">
-                            <h2 className="font-bold">{album.title}</h2>
-                            <p>{album.artist.name}</p>
-                            <img
-                                src={album.album.cover_medium}
-                                alt={album.album.title}
-                            />
+                        // <div key={album.id} className="border p-2 rounded shadow">
+                        //     <h2 className="font-bold">{album.title}</h2>
+                        //     <p>{album.artist.name}</p>
+                        //     <img
+                        //         src={album.album?.cover_medium}
+                        //         alt={album.album?.title}
+                        //     />
 
-                            <audio controls src={album.preview} className="w-full"></audio>
-                        </div>
+                        //     <audio controls src={album.preview} className="w-full"></audio>
+                        // </div>
+                        <AlbumCard key={album.id} album={album} />
                     ))}
                 </div>
             )}

@@ -20,6 +20,7 @@ const Home = () => {
 
   return (
     <div>
+      
       <AlbumSearch/>
       {/* {
         isLoading ? <h1>Loading...</h1> :  singleSearch.data.map((song) => {

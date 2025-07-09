@@ -7,7 +7,7 @@
 export type Search = {
     data:  Datum[];
     total: number;
-    next:  string;
+    next?:  string;
 }
 
 export type Datum = {
@@ -24,37 +24,37 @@ export type Datum = {
     explicit_content_cover?:  number;
     preview?:                 string;
     md5_image?:               string;
-    artist:                  Artist;
+    artist?:                  Artist;
     album?:                   Album;
     type?:                    DatumType;
 }
 
 export type Album = {
-    id:           number;
-    title:        string;
-    cover:        string;
-    cover_small:  string;
-    cover_medium: string;
-    cover_big:    string;
-    cover_xl:     string;
-    md5_image:    string;
-    tracklist:    string;
-    type:         AlbumType;
+    id?:           number;
+    title?:        string;
+    cover?:        string;
+    cover_small?:  string;
+    cover_medium?: string;
+    cover_big?:    string;
+    cover_xl?:     string;
+    md5_image?:    string;
+    tracklist?:    string;
+    type?:         AlbumType;
 }
 
 export type AlbumType = "album";
 
 export type Artist = {
-    id:             number;
-    name:           string;
-    link:           string;
-    picture:        string;
-    picture_small:  string;
-    picture_medium: string;
-    picture_big:    string;
-    picture_xl:     string;
-    tracklist:      string;
-    type:           ArtistType;
+    id?:             number;
+    name?:           string;
+    link?:           string;
+    picture?:        string;
+    picture_small?:  string;
+    picture_medium?: string;
+    picture_big?:    string;
+    picture_xl?:     string;
+    tracklist?:      string;
+    type?:           ArtistType;
 }
 
 export type ArtistType = "artist";
