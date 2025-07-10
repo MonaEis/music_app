@@ -9,29 +9,39 @@ const AlbumSearch = () => {
     const [singleSearch, setSingleSearch] = useState<string>("");
 
     const [currentSearchTerm, setCurrentSearchTerm] = useState<string>("");
-    const [debouncedInputSearchTerm, setDebouncedInputSearchTerm] = useState<string>("fleetwood mac");
+    const [debouncedInputSearchTerm, setDebouncedInputSearchTerm] = useState<string>("");
 
     // Initial-Fetch ohne debounce
     useEffect(() => {
-        fetch(`https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=fleetwood mac`)
+        const initialSearchTerm = "fleetwood mac"; // gewünschter Initialwert
+        setIsLoading(true);
+        setError(null);
+
+        fetch(`https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=${initialSearchTerm}`)
             .then((res) => {
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 return res.json();
             })
             .then((data) => {
                 setAlbums(data);
-                setIsLoading(false);
-                setCurrentSearchTerm("fleetwood mac");
+                setCurrentSearchTerm(initialSearchTerm);
             })
             .catch((err) => {
                 console.error("Fetch error:", err);
                 setError(err.message || "Something went wrong during fetch.");
                 setIsLoading(false);
-            });
+            }).finally(() => setIsLoading(false));
     }, []);
 
     // debounce-Effekt
     useEffect(() => {
+
+        // wenn singleSearch leer ist->debouncedInputSearchTerm auch leer: Wichtig, damit leere Suche nihct ausgelöst wird
+        if (!singleSearch || singleSearch === "") {
+            setDebouncedInputSearchTerm("");
+            return;
+        }
+
         const timer = setTimeout(() => {
             setDebouncedInputSearchTerm(singleSearch);
         }, 800);
@@ -42,8 +52,9 @@ const AlbumSearch = () => {
 
     // Suche ausführen bei debounced Input
     useEffect(() => {
-        // Hier keine Prüfung auf currentSearchTerm mehr nötig, da der Debounce-Effekt das steuert
-        if (!debouncedInputSearchTerm) return; // Nicht suchen, wenn leer
+        // Nur suchen, wenn der debounced Begriff nicht leer ist UND sich vom aktuellen Suchbegriff unterscheidet
+
+        if (!debouncedInputSearchTerm || debouncedInputSearchTerm === currentSearchTerm) return;
 
         setIsLoading(true);
         setError(null);
@@ -57,18 +68,16 @@ const AlbumSearch = () => {
             })
             .then((data) => {
                 setAlbums(data);
-                setIsLoading(false);
-                setCurrentSearchTerm(debouncedInputSearchTerm);
+                setCurrentSearchTerm(debouncedInputSearchTerm); // Aktualisiere den Begriff der angezeigten Ergebnisse
                 console.log(data)
             })
             .catch((err) => {
                 console.error("Fetch error:", err);
-                setIsLoading(false);
                 setError(err.message || "Something went wrong during fetch.");
             }).finally(() => {
                 setIsLoading(false);
             });
-    }, [debouncedInputSearchTerm]); // Nur debouncedInputSearchTerm als Abhängigkeit;
+    }, [debouncedInputSearchTerm, currentSearchTerm]);
 
 
     return (
@@ -83,7 +92,7 @@ const AlbumSearch = () => {
 
             {isLoading && <div className="text-center text-lg text-gray-600">
                 Lade Alben...
-                {/* Spinner mit Tailwind CSS */}
+                {/* Spinner */}
                 <div className="size-8 animate-spin border-blue-500 border-4 border-t-transparent rounded-full mx-auto mt-2"></div>
             </div>}
             {error && (
@@ -96,7 +105,7 @@ const AlbumSearch = () => {
 
             {!isLoading && !error && albums?.data?.length === 0 && (
                 <h1>
-                    No results found for "{debouncedInputSearchTerm || currentSearchTerm}"
+                    No results found for "{currentSearchTerm}"
                 </h1>
             )}
 
